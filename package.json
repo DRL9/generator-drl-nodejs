@@ -10,11 +10,15 @@
   "bugs": {
     "url": "https://github.com/DRL9/generator-drl-nodejs/issues"
   },
+  "files": [
+    "generators"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Yeoman",
+    "yeoman-generator",
     "scaffolding",
     "nodejs"
   ],
@@ -25,5 +29,8 @@
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.1.2"
+  },
+  "dependencies": {
+    "yeoman-generator": "^4.12.0"
   }
 }
