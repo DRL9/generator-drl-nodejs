@@ -1,0 +1,29 @@
+{
+  "name": "generator-drl-nodejs",
+  "version": "0.0.1",
+  "description": "A node.js module scaffolding generator for Yeoman",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DRL9/generator-drl-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DRL9/generator-drl-nodejs/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Yeoman",
+    "scaffolding",
+    "nodejs"
+  ],
+  "author": "Yuanjun Zhong",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  }
+}
