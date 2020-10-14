@@ -1,9 +1,10 @@
 {
     "root": true,
-    "plugins": ["prettier"],
+    "plugins": ["prettier", "jest"],
     "env": {
         "commonjs": true,
         "es6": true,
+        "jest": true,
         "node": true
     },
     "parserOptions": {
