@@ -1,4 +1,5 @@
 const Generator = require('yeoman-generator');
+const config = require('./config');
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -22,23 +23,31 @@ module.exports = class extends Generator {
                 message: 'use Jest',
                 default: true,
             },
+            {
+                type: 'input',
+                name: 'projectName',
+                message: 'Project Name',
+                default: this.appname,
+            },
         ]);
     }
     /**
      * Saving configurations and configure the project (creating .editorconfig files and other metadata files)
      */
-    configuring() {
-        this.log(this.destinationRoot());
-        this.log(this.templatePath());
-        this.log(this.sourceRoot());
-    }
+    configuring() {}
     // 自定义任务放到下面
     method1() {}
     /**
      * Where you write the generator specific files (routes, controllers, etc)
      */
-    writing() {
-        this.fs.copyTpl;
+    async writing() {
+        // copy 写死的配置文件
+        config.filesToCopy.forEach((file) => {
+            this.fs.copy(this.templatePath(file), this.destinationPath(file.slice(1)));
+        });
+        config.filesToRender.forEach((file) => {
+            this.fs.copyTpl(this.templatePath(file), this.destinationPath(file.slice(1)), this.answers);
+        });
     }
     install() {}
     end() {
