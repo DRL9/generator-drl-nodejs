@@ -14,14 +14,17 @@
     "generators"
   ],
   "scripts": {
+    "coverage": "jest --coverage",
     "test": "jest"
   },
   "keywords": [
-    "Yeoman",
     "yeoman-generator",
     "scaffolding",
     "nodejs"
   ],
+  "engines": {
+    "node": ">=8"
+  },
   "author": "Yuanjun Zhong",
   "license": "MIT",
   "devDependencies": {
