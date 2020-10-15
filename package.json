@@ -24,7 +24,7 @@
     "nodejs"
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "author": "Yuanjun Zhong",
   "license": "MIT",
