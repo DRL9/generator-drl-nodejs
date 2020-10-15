@@ -5,9 +5,11 @@ module.exports = {
         '_.gitignore',
         '_jsconfig.json',
         '_.prettierrc',
-        '_app.js',
+        'index.js',
         '_.huskyrc.js',
         '_jest.config.js',
+        'test',
+        'src',
     ],
     filesToRender: ['_package.json', '_readme.md'],
 };

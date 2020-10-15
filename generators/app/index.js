@@ -43,10 +43,14 @@ module.exports = class extends Generator {
     async writing() {
         // copy 写死的配置文件
         config.filesToCopy.forEach((file) => {
-            this.fs.copy(this.templatePath(file), this.destinationPath(file.slice(1)));
+            this.fs.copy(this.templatePath(file), this.destinationPath(/^_/.test(file) ? file.slice(1) : file));
         });
         config.filesToRender.forEach((file) => {
-            this.fs.copyTpl(this.templatePath(file), this.destinationPath(file.slice(1)), this.answers);
+            this.fs.copyTpl(
+                this.templatePath(file),
+                this.destinationPath(/^_/.test(file) ? file.slice(1) : file),
+                this.answers
+            );
         });
         this.spawnCommandSync('git', ['init', '--quiet'], {
             cwd: this.destinationPath(),

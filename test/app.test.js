@@ -16,9 +16,11 @@ describe('app', () => {
                         '.gitignore',
                         'jsconfig.json',
                         '.prettierrc',
-                        'app.js',
+                        'index.js',
                         '.huskyrc.js',
                         'jest.config.js',
+                        'src',
+                        'test',
                     ].map((file) => expect(fs.promises.stat(file)).resolves.toBeTruthy())
                 )
             );
