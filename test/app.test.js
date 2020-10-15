@@ -10,7 +10,7 @@ describe('app', () => {
             .run(generatorPath)
             .then(() =>
                 Promise.all(
-                    ['.eslintignore', '.eslintrc', '.gitignore', 'jsconfig.json', '.prettierrc'].map((file) =>
+                    ['.eslintignore', '.eslintrc', '.gitignore', 'jsconfig.json', '.prettierrc', 'app.js'].map((file) =>
                         expect(fs.promises.stat(file)).resolves.toBeTruthy()
                     )
                 )

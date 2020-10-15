@@ -17,12 +17,12 @@ module.exports = class extends Generator {
     initializing() {}
     async prompting() {
         this.answers = await this.prompt([
-            {
-                type: 'confirm',
-                name: 'includeJest',
-                message: 'use Jest',
-                default: true,
-            },
+            // {
+            //     type: 'confirm',
+            //     name: 'includeJest',
+            //     message: 'use Jest',
+            //     default: true,
+            // },
             {
                 type: 'input',
                 name: 'projectName',
@@ -49,8 +49,10 @@ module.exports = class extends Generator {
             this.fs.copyTpl(this.templatePath(file), this.destinationPath(file.slice(1)), this.answers);
         });
     }
-    install() {}
+    install() {
+        this.npmInstall();
+    }
     end() {
-        this.log('end');
+        this.log('enjoy coding!');
     }
 };
