@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "target": "es2019",
+        "target": "esnext",
         "module": "commonJS"
     },
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules", "coverage"],
     "typeAcquisition": {
         "include": ["jest"]
     }
