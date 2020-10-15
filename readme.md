@@ -12,5 +12,8 @@ A node.js module scaffolding generator for Yeoman.
 ```zsh
 npm install -g yo
 npm install -g generator-drl-nodejs
+
+mkdir projectName
+cd projectName
 yo drl-nodejs
 ```
