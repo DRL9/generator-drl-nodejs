@@ -48,6 +48,9 @@ module.exports = class extends Generator {
         config.filesToRender.forEach((file) => {
             this.fs.copyTpl(this.templatePath(file), this.destinationPath(file.slice(1)), this.answers);
         });
+        this.spawnCommandSync('git', ['init', '--quiet'], {
+            cwd: this.destinationPath(),
+        });
     }
     install() {
         this.npmInstall();

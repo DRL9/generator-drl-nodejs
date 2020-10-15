@@ -10,9 +10,16 @@ describe('app', () => {
             .run(generatorPath)
             .then(() =>
                 Promise.all(
-                    ['.eslintignore', '.eslintrc', '.gitignore', 'jsconfig.json', '.prettierrc', 'app.js'].map((file) =>
-                        expect(fs.promises.stat(file)).resolves.toBeTruthy()
-                    )
+                    [
+                        '.eslintignore',
+                        '.eslintrc',
+                        '.gitignore',
+                        'jsconfig.json',
+                        '.prettierrc',
+                        'app.js',
+                        '.huskyrc.js',
+                        'jest.config.js',
+                    ].map((file) => expect(fs.promises.stat(file)).resolves.toBeTruthy())
                 )
             );
     });
@@ -26,9 +33,15 @@ describe('app', () => {
                 Promise.all([
                     expect(fs.promises.readFile('package.json', 'utf8').then(JSON.parse)).resolves.toMatchObject({
                         name: 'myProjectName',
+                        description: 'myProjectName',
                     }),
                     expect(fs.promises.readFile('readme.md', 'utf8')).resolves.toMatch(/# myProjectName/),
                 ])
             );
+    });
+    test('has git', () => {
+        return helpers
+            .run(generatorPath)
+            .then(() => expect(fs.promises.stat('.git').then((s) => s.isDirectory())).resolves.toBeTruthy());
     });
 });
