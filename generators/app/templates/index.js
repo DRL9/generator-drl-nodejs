@@ -48,6 +48,8 @@ app.use(async (ctx, next) => {
 
 app.use(router.routes());
 
-app.listen(4000, () => {
-    console.log('server start at ', 4000);
-});
+if (require.main === module) {
+    app.listen(4000, () => {
+        console.log('server start at ', 4000);
+    });
+}

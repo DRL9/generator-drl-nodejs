@@ -1,3 +1,3 @@
 test('test', () => {
-    expect(() => require.resolve('../index.js')).not.toThrow();
+    expect(() => require('../index.js')).not.toThrow();
 });
