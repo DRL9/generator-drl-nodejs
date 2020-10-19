@@ -52,21 +52,7 @@ module.exports = class extends Generator {
             );
         });
         if (this.answers.framework == 'Koa') {
-            this.fs.writeJSON(
-                this.destinationPath('package.json'),
-                this.fs.readJSON(this.destinationPath('package.json')),
-                (key, value) => {
-                    switch (key) {
-                        case 'dependencies':
-                            return Object.assign(value, config.deps.Koa.dependencies);
-                        case 'devDependencies':
-                            return Object.assign(value, config.deps.Koa.devDependencies);
-                        default:
-                            return value;
-                    }
-                },
-                4
-            );
+            this.fs.extendJSON(this.destinationPath('package.json'), config.deps.Koa);
             this.fs.copy(this.templatePath(config.mainJs.Koa), this.destinationPath('main.js'));
             config.extraFilesToCopy.Koa.forEach((file) => {
                 this.fs.copy(this.templatePath(file), this.destinationPath(file));
