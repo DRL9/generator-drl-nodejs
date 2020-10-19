@@ -17,17 +17,18 @@ module.exports = class extends Generator {
     initializing() {}
     async prompting() {
         this.answers = await this.prompt([
-            // {
-            //     type: 'confirm',
-            //     name: 'includeJest',
-            //     message: 'use Jest',
-            //     default: true,
-            // },
             {
                 type: 'input',
                 name: 'projectName',
                 message: 'Project Name',
                 default: this.appname,
+            },
+            {
+                type: 'list',
+                name: 'framework',
+                message: 'framework',
+                choices: ['None', 'Koa'],
+                default: 'None',
             },
         ]);
     }
@@ -35,8 +36,6 @@ module.exports = class extends Generator {
      * Saving configurations and configure the project (creating .editorconfig files and other metadata files)
      */
     configuring() {}
-    // 自定义任务放到下面
-    method1() {}
     /**
      * Where you write the generator specific files (routes, controllers, etc)
      */
@@ -52,6 +51,27 @@ module.exports = class extends Generator {
                 this.answers
             );
         });
+        if (this.answers.framework == 'Koa') {
+            this.fs.writeJSON(
+                this.destinationPath('package.json'),
+                this.fs.readJSON(this.destinationPath('package.json')),
+                (key, value) => {
+                    switch (key) {
+                        case 'dependencies':
+                            return Object.assign(value, config.deps.Koa.dependencies);
+                        case 'devDependencies':
+                            return Object.assign(value, config.deps.Koa.devDependencies);
+                        default:
+                            return value;
+                    }
+                },
+                4
+            );
+            this.fs.copy(this.templatePath(config.mainJs.Koa), this.destinationPath('main.js'));
+            config.extraFilesToCopy.Koa.forEach((file) => {
+                this.fs.copy(this.templatePath(file), this.destinationPath(file));
+            });
+        }
         this.spawnCommandSync('git', ['init', '--quiet'], {
             cwd: this.destinationPath(),
         });

@@ -1,49 +1,143 @@
 const path = require('path');
 const helpers = require('yeoman-test');
 const fs = require('fs');
+const assert = require('yeoman-assert');
 
-describe('app', () => {
-    const generatorPath = path.join(__dirname, '../generators/app');
-    test('run sucess', () => expect(helpers.run(generatorPath)).resolves.toBeTruthy());
-    test('creates expected files', () => {
-        return helpers
-            .run(generatorPath)
-            .then(() =>
-                Promise.all(
-                    [
-                        '.eslintignore',
-                        '.eslintrc',
-                        '.gitignore',
-                        'jsconfig.json',
-                        '.prettierrc',
-                        'index.js',
-                        '.huskyrc.js',
-                        'jest.config.js',
-                        'src',
-                        'test',
-                    ].map((file) => expect(fs.promises.stat(file)).resolves.toBeTruthy())
-                )
-            );
-    });
-    test('projectName is rendered', () => {
-        return helpers
+const generatorPath = path.join(__dirname, '../generators/app');
+
+describe('base', () => {
+    beforeAll((done) => {
+        helpers
             .run(generatorPath)
             .withPrompts({
                 projectName: 'myProjectName',
             })
-            .then(() =>
-                Promise.all([
-                    expect(fs.promises.readFile('package.json', 'utf8').then(JSON.parse)).resolves.toMatchObject({
-                        name: 'myProjectName',
-                        description: 'myProjectName',
-                    }),
-                    expect(fs.promises.readFile('readme.md', 'utf8')).resolves.toMatch(/# myProjectName/),
-                ])
-            );
+            .on('end', done);
     });
+    test('creates expected files', () => {
+        assert.file([
+            '.eslintignore',
+            '.eslintrc',
+            '.gitignore',
+            'jsconfig.json',
+            '.prettierrc',
+            'main.js',
+            '.huskyrc.js',
+            'jest.config.js',
+            'test',
+        ]);
+    });
+    test('projectName is rendered', () => {
+        assert.fileContent('readme.md', '# myProjectName');
+        assert.jsonFileContent('package.json', { name: 'myProjectName', description: 'myProjectName' });
+    });
+
     test('has git', () => {
+        assert.file(['.git']);
+    });
+});
+
+describe('select framework None', () => {
+    beforeAll((done) => {
+        helpers.run(generatorPath).on('end', done);
+    });
+    test('deps is right', () => {
+        return expect(
+            fs.promises
+                .readFile('package.json', 'utf-8')
+                .then(JSON.parse)
+                .then((a) => ({
+                    dependencies: Object.keys(a.dependencies),
+                    devDependencies: Object.keys(a.devDependencies),
+                }))
+        ).resolves.toMatchObject({
+            dependencies: [],
+            devDependencies: [
+                '@types/jest',
+                'eslint',
+                'eslint-config-prettier',
+                'eslint-plugin-jest',
+                'eslint-plugin-prettier',
+                'jest',
+                'husky',
+                'prettier',
+            ],
+        });
+    });
+    test('created expected files', () => {
+        assert.noFile(['src/logger.js', 'src/router.js']);
+    });
+    test('creates expected npm scripts', () => {
+        assert.fileContent('package.json', '"coverage": "jest --coverage"');
+        assert.fileContent('package.json', '"lint": "eslint --fix --ext .js ."');
+        assert.fileContent('package.json', '"test": "jest"');
+        assert.fileContent('package.json', '"dev": "nodemon main"');
+    });
+
+    test('main.js is empty', () => {
+        assert.fileContent('main.js', 'hello world');
+    });
+});
+
+describe('select framework Koa', () => {
+    beforeAll((done) => {
+        helpers
+            .run(generatorPath)
+            .withPrompts({
+                projectName: 'Koa',
+            })
+            .on('end', done);
+    });
+    test('deps is right', () => {
         return helpers
             .run(generatorPath)
-            .then(() => expect(fs.promises.stat('.git').then((s) => s.isDirectory())).resolves.toBeTruthy());
+            .withPrompts({
+                framework: 'Koa',
+            })
+            .then(() =>
+                expect(
+                    fs.promises
+                        .readFile('package.json', 'utf-8')
+                        .then(JSON.parse)
+                        .then((a) => ({
+                            dependencies: Object.keys(a.dependencies).sort(),
+                            devDependencies: Object.keys(a.devDependencies).sort(),
+                        }))
+                ).resolves.toMatchObject({
+                    dependencies: [
+                        '@koa/cors',
+                        '@koa/router',
+                        'koa',
+                        'koa-bodyparser',
+                        'winston',
+                        'winston-daily-rotate-file',
+                        'chalk',
+                    ].sort(),
+                    devDependencies: [
+                        'nodemon',
+                        '@types/jest',
+                        'eslint',
+                        'eslint-config-prettier',
+                        'eslint-plugin-jest',
+                        'eslint-plugin-prettier',
+                        'jest',
+                        'husky',
+                        'prettier',
+                    ].sort(),
+                })
+            );
+    });
+
+    test('creates expected npm scripts', () => {
+        assert.fileContent('package.json', '"coverage": "jest --coverage"');
+        assert.fileContent('package.json', '"lint": "eslint --fix --ext .js ."');
+        assert.fileContent('package.json', '"test": "jest"');
+        assert.fileContent('package.json', '"dev": "nodemon main"');
+    });
+    test('creates expected files', () => {
+        assert.file(['src/logger.js', 'src/router.js']);
+    });
+    test('main.js is koa file', () => {
+        assert.fileContent('main.js', 'koa');
     });
 });
