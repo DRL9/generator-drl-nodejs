@@ -9,4 +9,8 @@ npm test
 npm run lint
 # coverage
 npm run coverage
+<% if (includeGraphql) {%>
+# generate graphqlSchema.d.ts from codegen.yml
+npm run graphql-codegen
+<%}%>
 ```

@@ -1,0 +1,7 @@
+schema: ./schema.graphql
+generates:
+    ./types/graphqlSchema.d.ts:
+        plugins:
+            - typescript
+        config:
+            noExport: true

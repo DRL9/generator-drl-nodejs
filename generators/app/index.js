@@ -14,23 +14,46 @@ module.exports = class extends Generator {
     /**
      * Your initialization methods (checking current project state, getting configs, etc)
      */
-    initializing() {}
+    initializing() {
+        this.answers = {
+            projectName: this.appname,
+            framework: 'None',
+            includeGraphql: false,
+        };
+    }
     async prompting() {
-        this.answers = await this.prompt([
-            {
-                type: 'input',
-                name: 'projectName',
-                message: 'Project Name',
-                default: this.appname,
-            },
-            {
-                type: 'list',
-                name: 'framework',
-                message: 'framework',
-                choices: ['None', 'Koa'],
-                default: 'None',
-            },
-        ]);
+        Object.assign(
+            this.answers,
+            await this.prompt([
+                {
+                    type: 'input',
+                    name: 'projectName',
+                    message: 'Project Name',
+                    default: this.appname,
+                },
+                {
+                    type: 'list',
+                    name: 'framework',
+                    message: 'framework',
+                    choices: ['None', 'Koa'],
+                    default: 'None',
+                },
+            ])
+        );
+        if (this.answers.framework === 'Koa') {
+            Object.assign(
+                this.answers,
+                await this.prompt({
+                    type: 'confirm',
+                    name: 'includeGraphql',
+                    message: 'include graphql',
+                    default: false,
+                })
+            );
+        }
+        if (this.answers.includeGraphql) {
+            this.composeWith(require.resolve('../graphql'));
+        }
     }
     /**
      * Saving configurations and configure the project (creating .editorconfig files and other metadata files)
@@ -39,7 +62,7 @@ module.exports = class extends Generator {
     /**
      * Where you write the generator specific files (routes, controllers, etc)
      */
-    async writing() {
+    writing() {
         // copy 写死的配置文件
         config.filesToCopy.forEach((file) => {
             this.fs.copy(this.templatePath(file), this.destinationPath(/^_/.test(file) ? file.slice(1) : file));
@@ -55,7 +78,7 @@ module.exports = class extends Generator {
             this.fs.extendJSON(this.destinationPath('package.json'), config.deps.Koa);
             this.fs.copy(this.templatePath(config.mainJs.Koa), this.destinationPath('main.js'));
             config.extraFilesToCopy.Koa.forEach((file) => {
-                this.fs.copy(this.templatePath(file), this.destinationPath(file));
+                this.fs.copyTpl(this.templatePath(file), this.destinationPath(file), this.answers);
             });
         }
         this.spawnCommandSync('git', ['init', '--quiet'], {
@@ -66,6 +89,12 @@ module.exports = class extends Generator {
         this.npmInstall();
     }
     end() {
+        if (process.env.NODE_ENV !== 'test') {
+            this.spawnCommandSync('npm', ['run', 'lint'], {
+                cwd: this.destinationPath(),
+            });
+        }
+
         this.log('enjoy coding!');
     }
 };

@@ -141,3 +141,52 @@ describe('select framework Koa', () => {
         assert.fileContent('main.js', 'koa');
     });
 });
+
+describe('include graphql', () => {
+    beforeAll((done) => {
+        helpers
+            .run(generatorPath)
+            .withPrompts({
+                framework: 'Koa',
+                includeGraphql: true,
+            })
+            .on('end', done);
+    });
+    test('router include graphql path', () => {
+        assert.fileContent('src/router.js', `const gqlMiddlewave = require('./graphql');`);
+        assert.fileContent('src/router.js', 'rootRouter.post(gqlMiddlewave.path, gqlMiddlewave);');
+    });
+    test('creates expected files', () => {
+        assert.file([
+            'src/graphql/index.js',
+            'src/graphql/resolvers.js',
+            'schema.graphql',
+            'codegen.yml',
+            '.graphqlrc.yaml',
+        ]);
+    });
+    test('deps is right', () => {
+        assert.jsonFileContent('package.json', {
+            dependencies: {
+                'apollo-server-koa': '^2.18.x',
+                graphql: '^15.3.x',
+            },
+            devDependencies: {
+                '@graphql-codegen/cli': '^1.17.x',
+                '@graphql-codegen/typescript-type-graphql': '^1.17.x',
+                typescript: '^4.0.x',
+            },
+        });
+    });
+    test('readme has codegen desc', () => {
+        assert.fileContent('readme.md', '# generate graphqlSchema.d.ts from codegen.yml');
+        assert.fileContent('readme.md', 'npm run graphql-codegen');
+    });
+    test('creates expected npm scripts', () => {
+        assert.jsonFileContent('package.json', {
+            scripts: {
+                'graphql-codegen': 'graphql-codegen',
+            },
+        });
+    });
+});

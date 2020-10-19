@@ -9,6 +9,10 @@
 
 A node.js module scaffolding generator for Yeoman.
 
+Including templates:
+- koa
+- graphql
+
 ## Usage
 ```zsh
 npm install -g yo
