@@ -7,4 +7,6 @@ npm run dev
 npm test
 # lint
 npm run lint
+# coverage
+npm run coverage
 ```

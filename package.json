@@ -21,6 +21,7 @@
   "keywords": [
     "yeoman-generator",
     "scaffolding",
+    "koajs",
     "nodejs"
   ],
   "engines": {
