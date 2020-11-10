@@ -37,6 +37,18 @@ describe('base', () => {
     });
 });
 
+test("replace projectName's blank with -", (done) => {
+    helpers
+        .run(generatorPath)
+        .withPrompts({
+            projectName: 'hello world',
+        })
+        .then(() => {
+            assert.fileContent('readme.md', '# hello-world');
+            done();
+        });
+});
+
 describe('select framework None', () => {
     beforeAll((done) => {
         helpers.run(generatorPath).on('end', done);

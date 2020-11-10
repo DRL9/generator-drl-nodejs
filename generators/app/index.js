@@ -40,6 +40,7 @@ module.exports = class extends Generator {
                 },
             ])
         );
+        this.answers.projectName = this.answers.projectName.replace(/ /g, '-');
         if (this.answers.framework === 'Koa') {
             Object.assign(
                 this.answers,
