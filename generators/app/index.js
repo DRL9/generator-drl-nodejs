@@ -38,6 +38,12 @@ module.exports = class extends Generator {
                     choices: ['None', 'Koa'],
                     default: 'None',
                 },
+                {
+                    type: 'checkbox',
+                    name: 'initGit',
+                    message: 'init git?',
+                    default: true,
+                },
             ])
         );
         this.answers.projectName = this.answers.projectName.replace(/ /g, '-');
@@ -82,9 +88,11 @@ module.exports = class extends Generator {
                 this.fs.copyTpl(this.templatePath(file), this.destinationPath(file), this.answers);
             });
         }
-        this.spawnCommandSync('git', ['init', '--quiet'], {
-            cwd: this.destinationPath(),
-        });
+        if (this.answers.initGit) {
+            this.spawnCommandSync('git', ['init', '--quiet'], {
+                cwd: this.destinationPath(),
+            });
+        }
     }
     install() {
         this.npmInstall();

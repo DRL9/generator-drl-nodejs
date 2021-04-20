@@ -19,22 +19,23 @@ app.use(async (ctx, next) => {
     let logLevel;
     if (ctx.status >= 500) {
         logLevel = 'error';
-    }
-    if (ctx.status >= 400) {
+    } else if (ctx.status >= 400) {
         logLevel = 'warn';
-    }
-    if (ctx.status >= 100) {
+    } else if (ctx.status >= 100) {
         logLevel = 'info';
     }
-
+    const respBody = ctx.response.body;
+    const outputBody = ctx.path.includes('/api');
     let msg =
         chalk.gray(`${ctx.method} ${ctx.originalUrl}`) +
         chalk[STATUS_COLORS[logLevel]](` ${ctx.status} `) +
-        chalk.white(`${ctx.request.rawBody} ${JSON.stringify(ctx.response.body)} `) +
+        chalk.white(`${outputBody ? ctx.request.rawBody || '' : ''} `) +
+        chalk.blue(`${outputBody ? (typeof respBody === 'string' ? respBody : JSON.stringify(respBody)) : ''} `) +
         chalk.gray(`${ms}ms`);
 
     logger.log(logLevel, msg);
 });
+
 
 app.use(cors());
 app.use(bodyParser());
