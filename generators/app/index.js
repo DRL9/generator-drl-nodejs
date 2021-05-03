@@ -39,10 +39,9 @@ module.exports = class extends Generator {
                     default: 'None',
                 },
                 {
-                    type: 'checkbox',
+                    type: 'confirm',
                     name: 'initGit',
                     message: 'init git?',
-                    choices: [true, false],
                     default: true,
                 },
             ])
