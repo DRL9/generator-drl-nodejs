@@ -22,7 +22,6 @@ describe('base', () => {
             'jsconfig.json',
             '.prettierrc',
             'main.js',
-            '.huskyrc.js',
             'jest.config.js',
             'test',
         ]);

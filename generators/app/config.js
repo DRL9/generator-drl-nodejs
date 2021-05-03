@@ -5,7 +5,6 @@ module.exports = {
         '_.gitignore',
         '_jsconfig.json',
         '_.prettierrc',
-        '_.huskyrc.js',
         '_jest.config.js',
         'main.js',
         'test',
