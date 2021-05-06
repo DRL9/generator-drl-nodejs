@@ -7,6 +7,7 @@ module.exports = {
         '_.prettierrc',
         '_jest.config.js',
         'main.js',
+        '.husky',
         'test',
     ],
     mainJs: {
