@@ -43,6 +43,6 @@
     "yeoman-test": "^6.0.0"
   },
   "dependencies": {
-    "yeoman-generator": "^0.20.3"
+    "yeoman-generator": "^4.13.0"
   }
 }
