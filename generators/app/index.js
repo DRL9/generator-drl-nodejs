@@ -74,6 +74,7 @@ module.exports = class extends Generator {
         config.filesToCopy.forEach((file) => {
             this.fs.copy(this.templatePath(file), this.destinationPath(/^_/.test(file) ? file.slice(1) : file));
         });
+        this.fs.copy(this.templatePath('.husky/.gitignore'), this.destinationPath('.husky/.gitignore'));
         config.filesToRender.forEach((file) => {
             this.fs.copyTpl(
                 this.templatePath(file),
@@ -100,6 +101,9 @@ module.exports = class extends Generator {
     end() {
         if (process.env.NODE_ENV !== 'test') {
             this.spawnCommandSync('npm', ['run', 'lint'], {
+                cwd: this.destinationPath(),
+            });
+            this.spawnCommandSync('npx', ['husky', 'install'], {
                 cwd: this.destinationPath(),
             });
         }
