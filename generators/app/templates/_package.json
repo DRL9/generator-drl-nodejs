@@ -4,7 +4,6 @@
   "description": "<%=projectName%>",
   "main": "main.js",
   "scripts": {
-    "postinstall": "husky install",
     "dev": "nodemon main",
     "coverage": "jest --coverage",
     "lint": "eslint --fix --ext .js .",

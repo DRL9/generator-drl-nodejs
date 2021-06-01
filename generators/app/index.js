@@ -19,6 +19,7 @@ module.exports = class extends Generator {
             projectName: this.appname,
             framework: 'None',
             includeGraphql: false,
+            npmClient: 'npm',
         };
     }
     async prompting() {
@@ -43,6 +44,13 @@ module.exports = class extends Generator {
                     name: 'initGit',
                     message: 'init git?',
                     default: true,
+                },
+                {
+                    type: 'list',
+                    name: 'npmClient',
+                    message: 'which npm client',
+                    choices: ['npm', 'yarn'],
+                    default: 'npm',
                 },
             ])
         );
@@ -74,7 +82,6 @@ module.exports = class extends Generator {
         config.filesToCopy.forEach((file) => {
             this.fs.copy(this.templatePath(file), this.destinationPath(/^_/.test(file) ? file.slice(1) : file));
         });
-        this.fs.copy(this.templatePath('.husky/.gitignore'), this.destinationPath('.husky/.gitignore'));
         config.filesToRender.forEach((file) => {
             this.fs.copyTpl(
                 this.templatePath(file),
@@ -93,17 +100,28 @@ module.exports = class extends Generator {
             this.spawnCommandSync('git', ['init', '--quiet'], {
                 cwd: this.destinationPath(),
             });
+            this.fs.extendJSON(this.destinationPath('package.json'), {
+                scripts: {
+                    postinstall: 'husky install',
+                },
+                devDependencies: {
+                    husky: '^6.0.0',
+                },
+            });
+            this.fs.copy(this.templatePath('.husky'), this.destinationPath('.husky'));
+            this.fs.copy(this.templatePath('.husky/.gitignore'), this.destinationPath('.husky/.gitignore'));
         }
     }
     install() {
-        this.npmInstall();
+        if (this.answers.npmClient === 'yarn') {
+            this.yarnInstall();
+        } else {
+            this.npmInstall();
+        }
     }
     end() {
         if (process.env.NODE_ENV !== 'test') {
             this.spawnCommandSync('npm', ['run', 'lint'], {
-                cwd: this.destinationPath(),
-            });
-            this.spawnCommandSync('npx', ['husky', 'install'], {
                 cwd: this.destinationPath(),
             });
         }
