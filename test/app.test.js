@@ -5,6 +5,10 @@ const assert = require('yeoman-assert');
 
 const generatorPath = path.join(__dirname, '../generators/app');
 
+function readPkgJsonContent() {
+    return fs.promises.readFile('package.json', 'utf-8').then(JSON.parse);
+}
+
 describe('base', () => {
     beforeAll((done) => {
         helpers
@@ -56,36 +60,21 @@ describe('init Git', () => {
             .on('end', done);
     });
     test('deps is right', () => {
-        return expect(fs.promises.readFile('package.json', 'utf-8').then(JSON.parse)).resolves.toMatchSnapshot();
+        return expect(readPkgJsonContent()).resolves.toMatchSnapshot();
     });
 });
 
 describe('select framework None', () => {
     beforeAll((done) => {
-        helpers.run(generatorPath).on('end', done);
+        helpers
+            .run(generatorPath)
+            .withPrompts({
+                projectName: 'test_none_framework',
+            })
+            .on('end', done);
     });
     test('deps is right', () => {
-        return expect(
-            fs.promises
-                .readFile('package.json', 'utf-8')
-                .then(JSON.parse)
-                .then((a) => ({
-                    dependencies: Object.keys(a.dependencies),
-                    devDependencies: Object.keys(a.devDependencies),
-                }))
-        ).resolves.toMatchObject({
-            dependencies: [],
-            devDependencies: [
-                '@types/jest',
-                'eslint',
-                'eslint-config-prettier',
-                'eslint-plugin-jest',
-                'eslint-plugin-prettier',
-                'jest',
-                'prettier',
-                'husky',
-            ],
-        });
+        return expect(readPkgJsonContent()).resolves.toMatchSnapshot();
     });
     test('created expected files', () => {
         assert.noFile(['src/logger.js', 'src/router.js']);
@@ -116,39 +105,9 @@ describe('select framework Koa', () => {
             .run(generatorPath)
             .withPrompts({
                 framework: 'Koa',
+                projectName: 'test_koa_framework',
             })
-            .then(() =>
-                expect(
-                    fs.promises
-                        .readFile('package.json', 'utf-8')
-                        .then(JSON.parse)
-                        .then((a) => ({
-                            dependencies: Object.keys(a.dependencies).sort(),
-                            devDependencies: Object.keys(a.devDependencies).sort(),
-                        }))
-                ).resolves.toMatchObject({
-                    dependencies: [
-                        '@koa/cors',
-                        '@koa/router',
-                        'koa',
-                        'koa-bodyparser',
-                        'winston',
-                        'winston-daily-rotate-file',
-                        'chalk',
-                    ].sort(),
-                    devDependencies: [
-                        'nodemon',
-                        '@types/jest',
-                        'eslint',
-                        'eslint-config-prettier',
-                        'eslint-plugin-jest',
-                        'eslint-plugin-prettier',
-                        'jest',
-                        'husky',
-                        'prettier',
-                    ].sort(),
-                })
-            );
+            .then(() => expect(readPkgJsonContent()).resolves.toMatchSnapshot());
     });
 
     test('creates expected npm scripts', () => {
