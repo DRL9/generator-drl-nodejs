@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`init Git deps is right 1`] = `
+Object {
+  "dependencies": Object {},
+  "description": "test_init_git",
+  "devDependencies": Object {
+    "@types/jest": "^26.0.14",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^6.0.0",
+    "jest": "^26.5.3",
+    "prettier": "^2.1.2",
+  },
+  "keywords": Array [],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "test_init_git",
+  "scripts": Object {
+    "coverage": "jest --coverage",
+    "dev": "nodemon main",
+    "lint": "eslint --fix --ext .js .",
+    "postinstall": "husky install",
+    "test": "jest",
+  },
+  "version": "0.0.1",
+}
+`;

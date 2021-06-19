@@ -11,6 +11,7 @@ describe('base', () => {
             .run(generatorPath)
             .withPrompts({
                 projectName: 'myProjectName',
+                initGit: false,
             })
             .on('end', done);
     });
@@ -30,10 +31,6 @@ describe('base', () => {
         assert.fileContent('readme.md', '# myProjectName');
         assert.jsonFileContent('package.json', { name: 'myProjectName', description: 'myProjectName' });
     });
-
-    test('has git', () => {
-        assert.file(['.git']);
-    });
 });
 
 test("replace projectName's blank with -", (done) => {
@@ -46,6 +43,21 @@ test("replace projectName's blank with -", (done) => {
             assert.fileContent('readme.md', '# hello-world');
             done();
         });
+});
+
+describe('init Git', () => {
+    beforeAll((done) => {
+        helpers
+            .run(generatorPath)
+            .withPrompts({
+                initGit: true,
+                projectName: 'test_init_git',
+            })
+            .on('end', done);
+    });
+    test('deps is right', () => {
+        return expect(fs.promises.readFile('package.json', 'utf-8').then(JSON.parse)).resolves.toMatchSnapshot();
+    });
 });
 
 describe('select framework None', () => {
@@ -70,8 +82,8 @@ describe('select framework None', () => {
                 'eslint-plugin-jest',
                 'eslint-plugin-prettier',
                 'jest',
-                'husky',
                 'prettier',
+                'husky',
             ],
         });
     });
