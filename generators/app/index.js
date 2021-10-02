@@ -1,4 +1,5 @@
 const Generator = require('yeoman-generator');
+const utils = require('./utils');
 const config = require('./config');
 
 module.exports = class extends Generator {
@@ -87,7 +88,8 @@ module.exports = class extends Generator {
             );
         });
         const deps = {};
-        const devDeps = {
+
+        const devDeps = await utils.assignLatestVersion({
             '@types/jest': '^26.0.14',
             eslint: '^7.11.0',
             'eslint-config-prettier': '^6.12.0',
@@ -95,17 +97,20 @@ module.exports = class extends Generator {
             'eslint-plugin-prettier': '^3.1.4',
             jest: '^26.5.3',
             prettier: '^2.1.2',
-        };
+        });
         if (this.answers.framework == 'Koa') {
-            Object.assign(deps, {
-                '@koa/cors': '^3.1.0',
-                '@koa/router': '^9.4.0',
-                koa: '^2.13.0',
-                'koa-bodyparser': '^4.3.0',
-                winston: '^3.3.3',
-                'winston-daily-rotate-file': '^4.5.0',
-                chalk: '^4.1.0',
-            });
+            Object.assign(
+                deps,
+                await utils.assignLatestVersion({
+                    '@koa/cors': '^3.1.0',
+                    '@koa/router': '^9.4.0',
+                    koa: '^2.13.0',
+                    'koa-bodyparser': '^4.3.0',
+                    winston: '^3.3.3',
+                    'winston-daily-rotate-file': '^4.5.0',
+                    chalk: '^4.1.0',
+                })
+            );
             Object.assign(devDeps, {
                 nodemon: '^2.0.4',
             });

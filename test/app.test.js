@@ -60,7 +60,9 @@ describe('init Git', () => {
             .on('end', done);
     });
     test('deps is right', () => {
-        return expect(readPkgJsonContent()).resolves.toMatchSnapshot();
+        return expect(
+            readPkgJsonContent().then((pkgJson) => Object.keys(pkgJson['devDependencies']))
+        ).resolves.toMatchSnapshot();
     });
 });
 
@@ -74,7 +76,12 @@ describe('select framework None', () => {
             .on('end', done);
     });
     test('deps is right', () => {
-        return expect(readPkgJsonContent()).resolves.toMatchSnapshot();
+        return expect(
+            readPkgJsonContent().then((pkgJson) => [
+                ...Object.keys(pkgJson['devDependencies']),
+                ...Object.keys(pkgJson['dependencies']),
+            ])
+        ).resolves.toMatchSnapshot();
     });
     test('created expected files', () => {
         assert.noFile(['src/logger.js', 'src/router.js']);
@@ -107,7 +114,14 @@ describe('select framework Koa', () => {
                 framework: 'Koa',
                 projectName: 'test_koa_framework',
             })
-            .then(() => expect(readPkgJsonContent()).resolves.toMatchSnapshot());
+            .then(() =>
+                expect(
+                    readPkgJsonContent().then((pkgJson) => [
+                        ...Object.keys(pkgJson['devDependencies']),
+                        ...Object.keys(pkgJson['dependencies']),
+                    ])
+                ).resolves.toMatchSnapshot()
+            );
     });
 
     test('creates expected npm scripts', () => {
