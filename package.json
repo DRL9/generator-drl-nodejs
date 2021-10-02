@@ -1,6 +1,6 @@
 {
   "name": "generator-drl-nodejs",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "A node.js module scaffolding generator for Yeoman.",
   "main": "index.js",
   "repository": {
